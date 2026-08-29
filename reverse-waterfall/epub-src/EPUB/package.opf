@@ -18,12 +18,12 @@
     <meta property="schema:accessibilityFeature">structuralNavigation</meta>
     <meta property="schema:accessibilityFeature">tableOfContents</meta>
     <meta property="schema:accessibilityHazard">none</meta>
-    <meta property="schema:accessibilitySummary">This publication is text-only and includes a table of contents and structural navigation.</meta>
+    <meta property="schema:accessibilitySummary">The reading content is text-only and includes a table of contents and structural navigation. A decorative cover image is also included.</meta>
   </metadata>
 
   <manifest>
     <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
-    <item id="cover" href="cover.svg" media-type="image/svg+xml" properties="cover-image"/>
+    <item id="cover" href="cover.png" media-type="image/png" properties="cover-image"/>
     <item id="titlepage" href="titlepage.xhtml" media-type="application/xhtml+xml"/>
     <item id="poem" href="poem.xhtml" media-type="application/xhtml+xml"/>
     <item id="about" href="about.xhtml" media-type="application/xhtml+xml"/>
