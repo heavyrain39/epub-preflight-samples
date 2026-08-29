@@ -46,7 +46,7 @@ See [reverse-waterfall/VALIDATION.md](reverse-waterfall/VALIDATION.md) for the f
 Use this URL in automated examples and golden tests:
 
 ```text
-https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/c0656f27e4a42ac350f9833fb5a5f311889938fd/reverse-waterfall/reverse-waterfall-demo.epub
+https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/adc5a6b94e3b48e93dec243824dc1f44e085e836/reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
 ### Latest main-branch build
@@ -63,7 +63,8 @@ The immutable URL is preferred for Store examples and regression tests because f
 epub-preflight-samples/
 ├─ .github/
 │  └─ workflows/
-│     └─ build-reverse-waterfall.yml
+│     ├─ build-reverse-waterfall.yml
+│     └─ kindle-previewer-smoke.yml
 ├─ README.md
 ├─ LICENSE-NOTICE.md
 └─ reverse-waterfall/
@@ -93,7 +94,9 @@ epub-preflight-samples/
 
 The canonical fixture uses a PNG cover inside the EPUB, retains a separate editable SVG cover source outside the packaged EPUB, includes both EPUB 3 `nav.xhtml` navigation and a compatibility NCX, and declares both the EPUB 3 `cover-image` property and legacy cover metadata. These additions are intentionally conservative for Kindle conversion compatibility while remaining clean under EPUBCheck and DAISY Ace.
 
-Kindle Previewer is a separate retailer-specific conversion layer, so manual Previewer confirmation is tracked independently from standards validation.
+Kindle Previewer is a separate retailer-specific conversion layer, so its evidence is tracked independently from standards validation.
+
+The current golden EPUB also passes the Windows GitHub Actions Kindle Previewer smoke workflow. Run `33239124405` installed Kindle Previewer 3.106.0 on `windows-latest`, converted the EPUB with exit code 0, and uploaded the generated Kindle conversion/quality artifacts. The same EPUB also returned `Book converted successfully!` through the Kindle Previewer CLI on a local Windows machine. A GUI-only conversion failure observed on that machine is therefore treated as a local Previewer environment/UI issue rather than an EPUB compatibility failure.
 
 ## Rebuilding the fixture
 

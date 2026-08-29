@@ -15,7 +15,7 @@ reverse-waterfall/reverse-waterfall-demo.epub
 Immutable verified URL:
 
 ```text
-https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/c0656f27e4a42ac350f9833fb5a5f311889938fd/reverse-waterfall/reverse-waterfall-demo.epub
+https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/adc5a6b94e3b48e93dec243824dc1f44e085e836/reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
 The artifact at that commit was produced by the repository build workflow from the checked-in EPUB source tree.
@@ -28,11 +28,7 @@ EPUB Preflight Apify Actor:
 epubpreflight/epub-preflight
 ```
 
-Production smoke run:
-
-```text
-ZxQAqBZlYGsYOBkYD
-```
+The current revised artifact was revalidated against the production Full profile after the Kindle-conservative packaging changes.
 
 Requested profile:
 
@@ -99,4 +95,17 @@ errors: 0
 warnings: 0
 ```
 
-Manual Kindle Previewer confirmation remains pending because Kindle conversion is outside the hosted validator stack.
+Kindle Previewer confirmation is now complete and remains separate from the hosted validator stack.
+
+GitHub Actions Windows smoke:
+
+```text
+workflow: Kindle Previewer Smoke
+run: 33239124405
+head: 254718bb1514836013d666d01cc7eb900ad90a0f
+conclusion: success
+Kindle Previewer: 3.106.0
+conversion exit code: 0
+```
+
+The workflow generated Kindle conversion output, conversion logs, and a quality report and uploaded them as the `kindle-previewer-smoke` artifact. The same golden EPUB also returned `Book converted successfully!` from the Kindle Previewer CLI on a local Windows machine. A GUI-only failure observed on that machine is treated as a local Previewer environment/UI issue, not a golden EPUB blocker.
