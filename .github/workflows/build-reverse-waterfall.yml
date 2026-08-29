@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "reverse-waterfall/build_epub.py"
+      - "reverse-waterfall/assets/**"
       - "reverse-waterfall/epub-src/**"
       - ".github/workflows/build-reverse-waterfall.yml"
 
@@ -18,6 +19,19 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Install SVG rasterizer
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends librsvg2-bin
+
+      - name: Render Kindle-compatible cover
+        shell: bash
+        run: |
+          rsvg-convert             --width 1600             --height 2560             --format png             --output reverse-waterfall/epub-src/EPUB/cover.png             reverse-waterfall/assets/cover-source.svg
+
+          file reverse-waterfall/epub-src/EPUB/cover.png
 
       - name: Build deterministic EPUB
         run: python reverse-waterfall/build_epub.py
@@ -37,20 +51,22 @@ jobs:
               assert infos[0].compress_type == zipfile.ZIP_STORED
               assert zf.read("mimetype") == b"application/epub+zip"
               assert zf.testzip() is None, "CRC failure in EPUB archive"
+              assert "EPUB/cover.png" in zf.namelist()
+              assert "EPUB/cover.svg" not in zf.namelist()
 
           print(f"Verified {path} ({path.stat().st_size} bytes)")
           PY
 
-      - name: Commit rebuilt fixture
+      - name: Commit rebuilt cover and fixture
         shell: bash
         run: |
-          if git diff --quiet -- reverse-waterfall/reverse-waterfall-demo.epub; then
-            echo "Fixture already up to date."
+          if git diff --quiet --             reverse-waterfall/epub-src/EPUB/cover.png             reverse-waterfall/reverse-waterfall-demo.epub; then
+            echo "Cover and fixture already up to date."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reverse-waterfall/reverse-waterfall-demo.epub
+          git add             reverse-waterfall/epub-src/EPUB/cover.png             reverse-waterfall/reverse-waterfall-demo.epub
           git commit -m "Rebuild Reverse Waterfall EPUB fixture"
           git push
