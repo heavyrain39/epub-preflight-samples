@@ -1,6 +1,6 @@
 # Reverse Waterfall — Validation Record
 
-Status: **stable baseline + redesigned candidate / Kindle verified / production Full pending**
+Status: **golden / redesigned / production Full verified / Kindle verified**
 
 Updated: 2026-08-29
 
@@ -12,30 +12,28 @@ Repository path:
 reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
-Immutable stable baseline URL:
+Immutable verified golden URL:
 
 ```text
-https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/299f353070e7454750fd6213ac34331e77e49586/reverse-waterfall/reverse-waterfall-demo.epub
+https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/7353024813a9dda752772e33903330ab18f6a5e2/reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
-That immutable commit remains the stable Store/regression baseline until finalization.
+This exact immutable commit is the promoted Store/regression golden.
 
-Current redesigned candidate:
+Verified artifact:
 
 ```text
-main EPUB blob: c284347713dba8a3cf828e724fb088c6d55e6e5d
-rebuilt EPUB size: 82,505 bytes
+immutable commit: 7353024813a9dda752772e33903330ab18f6a5e2
+EPUB blob: c284347713dba8a3cf828e724fb088c6d55e6e5d
+EPUB size: 82,505 bytes
 cover blob: f077fe300bdfc45501cffae49c946ec17c8ec821
 cover format: JPEG / 1600×2560 / 3-component / 8-bit sRGB
 build workflow: 33241537373 / success
 exact-byte Kindle smoke: 33241687082 / success
-smoke head: ce9d75947517127ce1304c68fb9979f6bf626bd5
 conversion exit code: 0
 ```
 
-The redesigned candidate has not yet been promoted to the immutable URL because its exact bytes still require the production Full-profile rerun planned for finalization.
-
-## Standards baseline — production Full profile
+## Exact-byte standards validation — production Full profile
 
 EPUB Preflight Apify Actor:
 
@@ -43,7 +41,7 @@ EPUB Preflight Apify Actor:
 epubpreflight/epub-preflight
 ```
 
-This result belongs to the preceding structurally equivalent revision before the final PNG-to-JPEG cover normalization. It is retained as the production standards baseline rather than being misrepresented as an exact-byte result for the current JPEG artifact.
+The production Full-profile result below is for the exact immutable redesigned EPUB URL recorded above.
 
 Requested profile:
 
@@ -62,7 +60,7 @@ status: ready
 publishable: true
 validation_complete: true
 
-epub-preflight 0.6.0 | completed | ok=true
+epub-preflight 0.6.1 | completed | ok=true
 epubcheck      5.3.0 | completed | ok=true
 ace            1.4.6 | completed | ok=true
 
@@ -70,6 +68,9 @@ errors: 0
 warnings: 0
 root_causes: 0
 actionable_issues: 0
+
+Actor run: gIggUkF2cIiTDAMYk
+GitHub hosted smoke: 33242025956
 ```
 
 ## Notes
@@ -100,19 +101,9 @@ Earlier iterations moved away from an SVG packaged cover and then exposed a seco
 - added legacy `<meta name="cover" content="cover"/>` metadata;
 - kept the editable SVG source outside the EPUB and normalized the packaged cover to RGB JPEG.
 
-The stable baseline and the redesigned release candidate are both Kindle-verified independently from the hosted validator stack.
+The promoted redesigned golden is Kindle-verified independently from the hosted validator stack.
 
-Stable baseline smoke:
-
-```text
-workflow: Kindle Previewer Smoke
-run: 33240892616
-head: 299f353070e7454750fd6213ac34331e77e49586
-conclusion: success
-conversion exit code: 0
-```
-
-Redesigned candidate exact-byte smoke:
+Promoted golden exact-byte smoke:
 
 ```text
 workflow: Kindle Previewer Smoke
@@ -125,4 +116,4 @@ conversion exit code: 0
 
 The workflow converted the checked-in redesigned EPUB successfully and generated Kindle conversion/quality output. A local JPEG-normalized reproduction also returned `Supported / Success` and produced a KPF artifact.
 
-A production Full-profile rerun of the redesigned candidate should be recorded during the finalization audit. Until then, the earlier production 0-error / 0-warning result above remains explicitly historical evidence, and the immutable baseline URL must not be silently repointed.
+The exact artifact is now verified on both layers: production Full-profile validation and Kindle Previewer conversion. A second hosted run through the reference agent client (`nF2zfRruW6Ir3pbX2`) independently returned `ready`, `publishable=true`, and `continue_release`.
