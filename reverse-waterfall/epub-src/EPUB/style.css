@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+html {
+  font-family: serif;
+  line-height: 1.6;
+}
+
+body {
+  margin: 5%;
+  max-width: 42em;
+}
+
+h1 {
+  line-height: 1.2;
+}
+
+.byline {
+  margin-top: 1.5em;
+}
+
+.stanza {
+  margin: 0 0 1.5em 0;
+}
+
+.final-lines {
+  margin-top: 1em;
+  padding-left: 1em;
+}
+
+.note {
+  margin-top: 2em;
+}

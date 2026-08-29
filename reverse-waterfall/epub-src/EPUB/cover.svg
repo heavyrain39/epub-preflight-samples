@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600">
+  <title>Reverse Waterfall</title>
+  <desc>Abstract cover image for the EPUB validation sample.</desc>
+  <rect width="1200" height="1600" fill="#10213d"/>
+  <path d="M600 250v850" stroke="#7ad9cf" stroke-width="90" stroke-linecap="round"/>
+  <path d="M390 520l210-210 210 210" fill="none" stroke="#7ad9cf" stroke-width="90" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="600" cy="1250" r="95" fill="#f2f5f7"/>
+</svg>
