@@ -1,4 +1,5 @@
 name: Kindle Previewer Smoke
+# Validates the currently checked-in golden EPUB binary.
 
 on:
   workflow_dispatch:
