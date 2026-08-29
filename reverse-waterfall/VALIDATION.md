@@ -1,6 +1,6 @@
 # Reverse Waterfall — Validation Record
 
-Status: **golden / JPEG normalized / Kindle verified**
+Status: **stable baseline + redesigned candidate / Kindle verified / production Full pending**
 
 Updated: 2026-08-29
 
@@ -12,13 +12,28 @@ Repository path:
 reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
-Immutable verified URL:
+Immutable stable baseline URL:
 
 ```text
 https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/299f353070e7454750fd6213ac34331e77e49586/reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
-The artifact at that commit was produced by the repository build workflow from the checked-in EPUB source tree.
+That immutable commit remains the stable Store/regression baseline until finalization.
+
+Current redesigned candidate:
+
+```text
+main EPUB blob: c284347713dba8a3cf828e724fb088c6d55e6e5d
+rebuilt EPUB size: 82,505 bytes
+cover blob: f077fe300bdfc45501cffae49c946ec17c8ec821
+cover format: JPEG / 1600×2560 / 3-component / 8-bit sRGB
+build workflow: 33241537373 / success
+exact-byte Kindle smoke: 33241687082 / success
+smoke head: ce9d75947517127ce1304c68fb9979f6bf626bd5
+conversion exit code: 0
+```
+
+The redesigned candidate has not yet been promoted to the immutable URL because its exact bytes still require the production Full-profile rerun planned for finalization.
 
 ## Standards baseline — production Full profile
 
@@ -72,7 +87,7 @@ The packaged cover is now a flattened 1600×2560 RGB JPEG. The editable vector a
 
 Do not overwrite the meaning of this verification record by changing the immutable URL.
 
-If the fixture or validator stack changes, validate the new bytes independently and record a new immutable commit URL.
+If the fixture or validator stack changes, validate the new bytes independently. Promote a new immutable commit URL only after the intended standards and retailer-specific checks for that release candidate are complete.
 
 
 ## Kindle-conservative compatibility revision
@@ -85,9 +100,9 @@ Earlier iterations moved away from an SVG packaged cover and then exposed a seco
 - added legacy `<meta name="cover" content="cover"/>` metadata;
 - kept the editable SVG source outside the EPUB and normalized the packaged cover to RGB JPEG.
 
-The exact current JPEG golden is Kindle-verified independently from the hosted validator stack.
+The stable baseline and the redesigned release candidate are both Kindle-verified independently from the hosted validator stack.
 
-GitHub Actions Windows smoke:
+Stable baseline smoke:
 
 ```text
 workflow: Kindle Previewer Smoke
@@ -97,6 +112,17 @@ conclusion: success
 conversion exit code: 0
 ```
 
-The workflow converted the checked-in EPUB successfully and generated Kindle conversion/quality output. A local JPEG-normalized reproduction also returned `Supported / Success` and produced a KPF artifact.
+Redesigned candidate exact-byte smoke:
 
-A production Full-profile rerun should be recorded after the v0.6.1 Actor is deployed; until then, the earlier production 0-error / 0-warning result above remains explicitly historical evidence, not an exact-byte claim for this JPEG revision.
+```text
+workflow: Kindle Previewer Smoke
+run: 33241687082
+head: ce9d75947517127ce1304c68fb9979f6bf626bd5
+EPUB blob: c284347713dba8a3cf828e724fb088c6d55e6e5d
+conclusion: success
+conversion exit code: 0
+```
+
+The workflow converted the checked-in redesigned EPUB successfully and generated Kindle conversion/quality output. A local JPEG-normalized reproduction also returned `Supported / Success` and produced a KPF artifact.
+
+A production Full-profile rerun of the redesigned candidate should be recorded during the finalization audit. Until then, the earlier production 0-error / 0-warning result above remains explicitly historical evidence, and the immutable baseline URL must not be silently repointed.

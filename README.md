@@ -6,7 +6,7 @@ Public EPUB fixtures for testing and demonstrating [EPUB Preflight](https://apif
 
 ### Reverse Waterfall
 
-`reverse-waterfall/reverse-waterfall-demo.epub` is the canonical public golden sample for EPUB Preflight.
+`reverse-waterfall/reverse-waterfall-demo.epub` is the canonical public sample for EPUB Preflight. The `main` branch currently carries the redesigned release candidate; the immutable URL below remains the stable baseline until the candidate completes production Full-profile revalidation.
 
 - Title: **Reverse Waterfall**
 - Author: **Yakshawan**
@@ -16,7 +16,7 @@ Public EPUB fixtures for testing and demonstrating [EPUB Preflight](https://apif
 - Build: deterministic Python script
 - Intended use: hosted validation, API examples, smoke tests, and documentation
 
-The fixture is intentionally small and is built to pass the complete hosted validation stack cleanly.
+The fixture is intentionally small. The stable baseline has clean hosted-validation evidence, while the redesigned `main` candidate has completed deterministic rebuild and Kindle Previewer smoke and is awaiting an exact-byte production Full-profile rerun.
 
 ### Validation evidence
 
@@ -38,15 +38,19 @@ warnings = 0
 
 Historical production smoke run: `ZxQAqBZlYGsYOBkYD`.
 
-The current JPEG golden is additionally verified by Kindle Previewer on Windows:
+The stable JPEG baseline is additionally verified by Kindle Previewer on Windows:
 workflow run `33240892616`, head `299f353070e7454750fd6213ac34331e77e49586`, conversion exit code 0.
+
+The redesigned release candidate was rebuilt by workflow run `33241537373`. The generated cover is a 1600×2560, 3-component, 8-bit sRGB JPEG and the rebuilt EPUB is 82,505 bytes. The exact rebuilt EPUB bytes were then verified by Kindle Previewer in run `33241687082` at head `ce9d75947517127ce1304c68fb9979f6bf626bd5`, conversion exit code 0. Its EPUB blob is `c284347713dba8a3cf828e724fb088c6d55e6e5d`.
+
+Production Full-profile validation for these redesigned bytes is intentionally deferred to the finalization audit.
 
 See [reverse-waterfall/VALIDATION.md](reverse-waterfall/VALIDATION.md) for the
 separated standards and retailer-specific evidence.
 
 ## Download
 
-### Immutable verified URL
+### Immutable stable baseline URL
 
 Use this URL in automated examples and golden tests:
 
@@ -60,7 +64,7 @@ https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/299f353070e
 https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/main/reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
-The immutable URL is preferred for Store examples and regression tests because future fixture revisions cannot silently change its bytes.
+The immutable baseline URL remains preferred for Store examples and regression tests until the redesigned candidate receives exact-byte production Full-profile validation. The finalization audit should then promote the validated candidate commit and update downstream Store/sample references together.
 
 ## Repository layout
 
@@ -101,7 +105,7 @@ The canonical fixture uses a JPEG cover inside the EPUB, retains a separate edit
 
 Kindle Previewer is a separate retailer-specific conversion layer, so its evidence is tracked independently from standards validation.
 
-The current JPEG golden passes the Windows GitHub Actions Kindle Previewer smoke workflow. Run `33240892616` checked out exact head `299f353070e7454750fd6213ac34331e77e49586`, converted the checked-in EPUB with exit code 0, and produced Kindle conversion/quality output. A separately normalized local JPEG reproduction also opened successfully in Kindle Previewer and produced KPF output.
+The stable baseline passes Kindle Previewer smoke at run `33240892616`. The redesigned candidate's exact rebuilt EPUB bytes pass Kindle Previewer smoke at run `33241687082` (head `ce9d75947517127ce1304c68fb9979f6bf626bd5`, exit code 0). A separately normalized local JPEG reproduction also opened successfully in Kindle Previewer and produced KPF output.
 
 ## Rebuilding the fixture
 
@@ -113,7 +117,7 @@ python reverse-waterfall/build_epub.py
 
 The build workflow rasterizes the editable SVG cover source and normalizes it to a flattened 1600×2560 RGB JPEG for conservative Kindle compatibility. The Python build script then creates the EPUB with a fixed ZIP timestamp, writes the required `mimetype` entry first and uncompressed, and packages the remaining EPUB resources deterministically.
 
-The GitHub Actions workflow rebuilds the binary whenever the EPUB source or builder changes and commits the resulting fixture if its bytes changed.
+The GitHub Actions build workflow rebuilds the binary whenever the EPUB source or builder changes and commits the resulting fixture if its bytes changed. A successful build now triggers the Kindle Previewer workflow after the rebuild completes, so retailer smoke evidence follows the generated EPUB rather than racing the source commit. Direct EPUB-binary changes still trigger Kindle smoke on push.
 
 ## Rights and licensing
 
