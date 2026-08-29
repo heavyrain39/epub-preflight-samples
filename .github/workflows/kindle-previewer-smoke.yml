@@ -1,0 +1,145 @@
+name: Kindle Previewer Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "reverse-waterfall/reverse-waterfall-demo.epub"
+      - "reverse-waterfall/epub-src/**"
+      - "reverse-waterfall/assets/**"
+      - "reverse-waterfall/build_epub.py"
+      - ".github/workflows/kindle-previewer-smoke.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  kindle-previewer:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download Kindle Previewer
+        shell: pwsh
+        run: |
+          Invoke-WebRequest `
+            -Uri "https://d2bzeorukaqrvt.cloudfront.net/KindlePreviewerInstaller.exe" `
+            -OutFile "$env:RUNNER_TEMP\KindlePreviewerInstaller.exe"
+
+      - name: Install Kindle Previewer
+        shell: pwsh
+        run: |
+          $process = Start-Process `
+            -FilePath "$env:RUNNER_TEMP\KindlePreviewerInstaller.exe" `
+            -ArgumentList "/S" `
+            -Wait `
+            -PassThru
+          if ($process.ExitCode -ne 0) {
+            throw "Kindle Previewer installer exited with code $($process.ExitCode)"
+          }
+
+      - name: Locate Kindle Previewer CLI
+        id: locate
+        shell: pwsh
+        run: |
+          $roots = @(
+            "$env:APPDATA\Amazon",
+            "$env:LOCALAPPDATA\Amazon",
+            "C:\Program Files\Amazon",
+            "C:\Program Files (x86)\Amazon"
+          ) | Where-Object { Test-Path $_ }
+
+          Write-Host "Search roots:"
+          $roots | ForEach-Object { Write-Host " - $_" }
+
+          $candidates = foreach ($root in $roots) {
+            Get-ChildItem -Path $root -Recurse -File -ErrorAction SilentlyContinue |
+              Where-Object { $_.Name -match "^(kindlepreviewer|Kindle Previewer)(\.exe|\.cmd|\.bat)?$" }
+          }
+
+          $candidate = $candidates | Select-Object -First 1
+          if (-not $candidate) {
+            Write-Host "Amazon installation tree:"
+            foreach ($root in $roots) {
+              Get-ChildItem -Path $root -Recurse -File -ErrorAction SilentlyContinue |
+                Select-Object -First 200 FullName
+            }
+            throw "Could not locate Kindle Previewer command-line executable."
+          }
+
+          Write-Host "Kindle Previewer CLI: $($candidate.FullName)"
+          "exe=$($candidate.FullName)" >> $env:GITHUB_OUTPUT
+
+      - name: Convert golden EPUB with Kindle Previewer
+        id: convert
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $exe = "${{ steps.locate.outputs.exe }}"
+          $input = (Resolve-Path "reverse-waterfall\reverse-waterfall-demo.epub").Path
+          $output = Join-Path $env:RUNNER_TEMP "kindle-output"
+          New-Item -ItemType Directory -Force -Path $output | Out-Null
+
+          Write-Host "Input: $input"
+          Write-Host "Output: $output"
+          Write-Host "Windows user profile: $env:USERPROFILE"
+
+          & $exe $input -convert -qualitychecks -output $output *>&1 |
+            Tee-Object -FilePath "$env:RUNNER_TEMP\kindle-cli.txt"
+
+          $code = $LASTEXITCODE
+          Write-Host "Kindle Previewer exit code: $code"
+          "exit_code=$code" >> $env:GITHUB_OUTPUT
+
+          Write-Host "Generated files:"
+          Get-ChildItem -Path $output -Recurse -Force -ErrorAction SilentlyContinue |
+            Select-Object FullName, Length
+
+      - name: Collect Kindle Previewer logs
+        if: always()
+        shell: pwsh
+        run: |
+          $bundle = Join-Path $env:RUNNER_TEMP "kindle-smoke-artifacts"
+          New-Item -ItemType Directory -Force -Path $bundle | Out-Null
+
+          if (Test-Path "$env:RUNNER_TEMP\kindle-cli.txt") {
+            Copy-Item "$env:RUNNER_TEMP\kindle-cli.txt" "$bundle\kindle-cli.txt"
+          }
+
+          $output = Join-Path $env:RUNNER_TEMP "kindle-output"
+          if (Test-Path $output) {
+            Copy-Item $output "$bundle\output" -Recurse -Force
+          }
+
+          $possible = @(
+            "$env:LOCALAPPDATA\Amazon\Kindle Previewer*",
+            "$env:APPDATA\Amazon\Kindle Previewer*"
+          )
+          foreach ($pattern in $possible) {
+            Get-ChildItem -Path $pattern -ErrorAction SilentlyContinue | ForEach-Object {
+              $dest = Join-Path $bundle ("app-" + $_.Name)
+              Copy-Item $_.FullName $dest -Recurse -Force -ErrorAction SilentlyContinue
+            }
+          }
+
+          Write-Host "Collected artifact tree:"
+          Get-ChildItem -Path $bundle -Recurse -Force -ErrorAction SilentlyContinue |
+            Select-Object FullName, Length
+
+      - name: Upload Kindle smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kindle-previewer-smoke
+          path: ${{ runner.temp }}\kindle-smoke-artifacts
+          if-no-files-found: warn
+
+      - name: Assert Kindle conversion succeeded
+        shell: pwsh
+        run: |
+          $code = "${{ steps.convert.outputs.exit_code }}"
+          if ($code -ne "0") {
+            throw "Kindle Previewer conversion failed with exit code $code"
+          }
