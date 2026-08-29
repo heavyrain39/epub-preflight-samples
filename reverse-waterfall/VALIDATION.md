@@ -15,7 +15,7 @@ reverse-waterfall/reverse-waterfall-demo.epub
 Immutable verified URL:
 
 ```text
-https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/87a162fa98d584bdd2493c91d4ab3a9015600a76/reverse-waterfall/reverse-waterfall-demo.epub
+https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/965d9924fc02cae7573fb38608a55aa983b6265e/reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
 The artifact at that commit was produced by the repository build workflow from the checked-in EPUB source tree.
@@ -31,7 +31,7 @@ epubpreflight/epub-preflight
 Production smoke run:
 
 ```text
-h4s4HebffxWwPj9mo
+sk8I39i0VgH15IcyY
 ```
 
 Requested profile:
@@ -70,7 +70,7 @@ Earlier fixture iterations intentionally went through the same hosted stack and 
 
 The final fixture removes the redundant reserved-prefix declaration and adds `role="doc-toc"`.
 
-A declared SVG cover image is also included so the native EPUB Preflight cover check remains clean.
+The packaged cover is now a 1600×2560 PNG. The editable vector artwork remains at `assets/cover-source.svg`, but SVG is not included as the EPUB cover image. This avoids Kindle Previewer warnings for an unsupported SVG cover while keeping the source artwork editable.
 
 ## Maintenance rule
 
