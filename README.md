@@ -35,7 +35,7 @@ errors = 0
 warnings = 0
 ```
 
-Production smoke run: `h4s4HebffxWwPj9mo`
+Production smoke run: `sk8I39i0VgH15IcyY`
 
 See [reverse-waterfall/VALIDATION.md](reverse-waterfall/VALIDATION.md) for the frozen verification record.
 
@@ -46,7 +46,7 @@ See [reverse-waterfall/VALIDATION.md](reverse-waterfall/VALIDATION.md) for the f
 Use this URL in automated examples and golden tests:
 
 ```text
-https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/87a162fa98d584bdd2493c91d4ab3a9015600a76/reverse-waterfall/reverse-waterfall-demo.epub
+https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/965d9924fc02cae7573fb38608a55aa983b6265e/reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
 ### Latest main-branch build
@@ -68,6 +68,8 @@ epub-preflight-samples/
 ├─ LICENSE-NOTICE.md
 └─ reverse-waterfall/
    ├─ VALIDATION.md
+   ├─ assets/
+   │  └─ cover-source.svg
    ├─ build_epub.py
    ├─ reverse-waterfall-demo.epub
    ├─ source/
@@ -78,7 +80,7 @@ epub-preflight-samples/
       │  └─ container.xml
       └─ EPUB/
          ├─ package.opf
-         ├─ cover.svg
+         ├─ cover.png
          ├─ nav.xhtml
          ├─ titlepage.xhtml
          ├─ poem.xhtml
@@ -94,7 +96,7 @@ Run:
 python reverse-waterfall/build_epub.py
 ```
 
-The build script creates the EPUB with a fixed ZIP timestamp, writes the required `mimetype` entry first and uncompressed, and packages the remaining EPUB resources deterministically.
+The build workflow rasterizes the editable SVG cover source to a 1600×2560 PNG for broad retailer compatibility. The Python build script then creates the EPUB with a fixed ZIP timestamp, writes the required `mimetype` entry first and uncompressed, and packages the remaining EPUB resources deterministically.
 
 The GitHub Actions workflow rebuilds the binary whenever the EPUB source or builder changes and commits the resulting fixture if its bytes changed.
 
