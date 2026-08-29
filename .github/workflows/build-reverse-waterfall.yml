@@ -20,18 +20,39 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Install SVG rasterizer
+      - name: Install cover renderers
         shell: bash
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends librsvg2-bin
+          sudo apt-get install -y --no-install-recommends librsvg2-bin imagemagick
 
-      - name: Render Kindle-compatible cover
+      - name: Render Kindle-compatible JPEG cover
         shell: bash
         run: |
-          rsvg-convert             --width 1600             --height 2560             --format png             --output reverse-waterfall/epub-src/EPUB/cover.png             reverse-waterfall/assets/cover-source.svg
+          temp_png="$RUNNER_TEMP/reverse-waterfall-cover.png"
 
-          file reverse-waterfall/epub-src/EPUB/cover.png
+          rsvg-convert \
+            --width 1600 \
+            --height 2560 \
+            --format png \
+            --output "$temp_png" \
+            reverse-waterfall/assets/cover-source.svg
+
+          convert "$temp_png" \
+            -background white \
+            -alpha remove \
+            -alpha off \
+            -colorspace sRGB \
+            -strip \
+            -interlace none \
+            -sampling-factor 4:2:0 \
+            -quality 92 \
+            reverse-waterfall/epub-src/EPUB/cover.jpg
+
+          rm -f reverse-waterfall/epub-src/EPUB/cover.png
+
+          file reverse-waterfall/epub-src/EPUB/cover.jpg
+          identify reverse-waterfall/epub-src/EPUB/cover.jpg
 
       - name: Build deterministic EPUB
         run: python reverse-waterfall/build_epub.py
@@ -51,7 +72,8 @@ jobs:
               assert infos[0].compress_type == zipfile.ZIP_STORED
               assert zf.read("mimetype") == b"application/epub+zip"
               assert zf.testzip() is None, "CRC failure in EPUB archive"
-              assert "EPUB/cover.png" in zf.namelist()
+              assert "EPUB/cover.jpg" in zf.namelist()
+              assert "EPUB/cover.png" not in zf.namelist()
               assert "EPUB/cover.svg" not in zf.namelist()
 
           print(f"Verified {path} ({path.stat().st_size} bytes)")
@@ -60,13 +82,19 @@ jobs:
       - name: Commit rebuilt cover and fixture
         shell: bash
         run: |
-          if git diff --quiet --             reverse-waterfall/epub-src/EPUB/cover.png             reverse-waterfall/reverse-waterfall-demo.epub; then
+          if git diff --quiet -- \
+            reverse-waterfall/epub-src/EPUB/cover.jpg \
+            reverse-waterfall/epub-src/EPUB/cover.png \
+            reverse-waterfall/reverse-waterfall-demo.epub; then
             echo "Cover and fixture already up to date."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add             reverse-waterfall/epub-src/EPUB/cover.png             reverse-waterfall/reverse-waterfall-demo.epub
+          git add -A -- \
+            reverse-waterfall/epub-src/EPUB/cover.jpg \
+            reverse-waterfall/epub-src/EPUB/cover.png \
+            reverse-waterfall/reverse-waterfall-demo.epub
           git commit -m "Rebuild Reverse Waterfall EPUB fixture"
           git push

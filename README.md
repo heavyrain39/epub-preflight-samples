@@ -92,7 +92,7 @@ epub-preflight-samples/
 
 ## Kindle compatibility notes
 
-The canonical fixture uses a PNG cover inside the EPUB, retains a separate editable SVG cover source outside the packaged EPUB, includes both EPUB 3 `nav.xhtml` navigation and a compatibility NCX, and declares both the EPUB 3 `cover-image` property and legacy cover metadata. These additions are intentionally conservative for Kindle conversion compatibility while remaining clean under EPUBCheck and DAISY Ace.
+The canonical fixture uses a JPEG cover inside the EPUB, retains a separate editable SVG cover source outside the packaged EPUB, includes both EPUB 3 `nav.xhtml` navigation and a compatibility NCX, and declares both the EPUB 3 `cover-image` property and legacy cover metadata. These additions are intentionally conservative for Kindle conversion compatibility while remaining clean under EPUBCheck and DAISY Ace.
 
 Kindle Previewer is a separate retailer-specific conversion layer, so its evidence is tracked independently from standards validation.
 
@@ -106,7 +106,7 @@ Run:
 python reverse-waterfall/build_epub.py
 ```
 
-The build workflow rasterizes the editable SVG cover source to a 1600×2560 PNG for broad retailer compatibility. The Python build script then creates the EPUB with a fixed ZIP timestamp, writes the required `mimetype` entry first and uncompressed, and packages the remaining EPUB resources deterministically.
+The build workflow rasterizes the editable SVG cover source and normalizes it to a flattened 1600×2560 RGB JPEG for conservative Kindle compatibility. The Python build script then creates the EPUB with a fixed ZIP timestamp, writes the required `mimetype` entry first and uncompressed, and packages the remaining EPUB resources deterministically.
 
 The GitHub Actions workflow rebuilds the binary whenever the EPUB source or builder changes and commits the resulting fixture if its bytes changed.
 

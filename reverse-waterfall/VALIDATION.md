@@ -66,7 +66,7 @@ Earlier fixture iterations intentionally went through the same hosted stack and 
 
 The final fixture removes the redundant reserved-prefix declaration and adds `role="doc-toc"`.
 
-The packaged cover is now a 1600×2560 PNG. The editable vector artwork remains at `assets/cover-source.svg`, but SVG is not included as the EPUB cover image. This avoids Kindle Previewer warnings for an unsupported SVG cover while keeping the source artwork editable.
+The packaged cover is now a 1600×2560 RGB JPEG. The editable vector artwork remains at `assets/cover-source.svg`, but SVG is not included as the EPUB cover image. This avoids Kindle Previewer warnings for an unsupported SVG cover while keeping the source artwork editable.
 
 ## Maintenance rule
 
@@ -77,13 +77,13 @@ If the fixture or validator stack changes, validate the new bytes independently 
 
 ## Kindle-conservative compatibility revision
 
-After a manual Kindle Previewer conversion failure with the otherwise clean PNG-cover fixture, the package was revised conservatively for Kindle ingestion:
+After a manual Kindle Previewer conversion failure with the otherwise clean JPEG-cover fixture, the package was revised conservatively for Kindle ingestion:
 
 - added `toc.ncx` and wired it through `spine toc="ncx"`;
 - added the navigation document to the spine so a visible HTML table of contents is available near the beginning;
 - retained EPUB 3 `properties="cover-image"`;
 - added legacy `<meta name="cover" content="cover"/>` metadata;
-- kept the packaged cover as PNG, with the editable SVG source outside the EPUB.
+- kept the editable SVG source outside the EPUB and normalized the packaged cover to RGB JPEG.
 
 The revised bytes remain clean under the production Full profile:
 
