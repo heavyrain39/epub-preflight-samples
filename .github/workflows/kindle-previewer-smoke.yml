@@ -114,17 +114,8 @@ jobs:
             Copy-Item $output "$bundle\output" -Recurse -Force
           }
 
-          $possible = @(
-            "$env:LOCALAPPDATA\Amazon\Kindle Previewer*",
-            "$env:APPDATA\Amazon\Kindle Previewer*"
-          )
-          foreach ($pattern in $possible) {
-            Get-ChildItem -Path $pattern -ErrorAction SilentlyContinue | ForEach-Object {
-              $dest = Join-Path $bundle ("app-" + $_.Name)
-              Copy-Item $_.FullName $dest -Recurse -Force -ErrorAction SilentlyContinue
-            }
-          }
-
+          # Keep artifacts focused on the conversion output and CLI log.
+          # The installed Previewer application tree is large and not needed.
           Write-Host "Collected artifact tree:"
           Get-ChildItem -Path $bundle -Recurse -Force -ErrorAction SilentlyContinue |
             Select-Object FullName, Length
