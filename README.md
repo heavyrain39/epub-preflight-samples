@@ -35,7 +35,7 @@ errors = 0
 warnings = 0
 ```
 
-Production smoke run: `sk8I39i0VgH15IcyY`
+Production smoke run: `ZxQAqBZlYGsYOBkYD`
 
 See [reverse-waterfall/VALIDATION.md](reverse-waterfall/VALIDATION.md) for the frozen verification record.
 
@@ -46,7 +46,7 @@ See [reverse-waterfall/VALIDATION.md](reverse-waterfall/VALIDATION.md) for the f
 Use this URL in automated examples and golden tests:
 
 ```text
-https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/965d9924fc02cae7573fb38608a55aa983b6265e/reverse-waterfall/reverse-waterfall-demo.epub
+https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/c0656f27e4a42ac350f9833fb5a5f311889938fd/reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
 ### Latest main-branch build
@@ -82,11 +82,18 @@ epub-preflight-samples/
          ├─ package.opf
          ├─ cover.png
          ├─ nav.xhtml
+         ├─ toc.ncx
          ├─ titlepage.xhtml
          ├─ poem.xhtml
          ├─ about.xhtml
          └─ style.css
 ```
+
+## Kindle compatibility notes
+
+The canonical fixture uses a PNG cover inside the EPUB, retains a separate editable SVG cover source outside the packaged EPUB, includes both EPUB 3 `nav.xhtml` navigation and a compatibility NCX, and declares both the EPUB 3 `cover-image` property and legacy cover metadata. These additions are intentionally conservative for Kindle conversion compatibility while remaining clean under EPUBCheck and DAISY Ace.
+
+Kindle Previewer is a separate retailer-specific conversion layer, so manual Previewer confirmation is tracked independently from standards validation.
 
 ## Rebuilding the fixture
 
