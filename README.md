@@ -18,9 +18,10 @@ Public EPUB fixtures for testing and demonstrating [EPUB Preflight](https://apif
 
 The fixture is intentionally small and is built to pass the complete hosted validation stack cleanly.
 
-### Verified production result
+### Validation evidence
 
-The current golden artifact was verified against the production Apify Actor on 2026-08-29:
+The publication structure passed the production Full profile before the final
+JPEG cover normalization:
 
 ```text
 validation_complete = true
@@ -35,9 +36,13 @@ errors = 0
 warnings = 0
 ```
 
-Production smoke run: `ZxQAqBZlYGsYOBkYD`
+Historical production smoke run: `ZxQAqBZlYGsYOBkYD`.
 
-See [reverse-waterfall/VALIDATION.md](reverse-waterfall/VALIDATION.md) for the frozen verification record.
+The current JPEG golden is additionally verified by Kindle Previewer on Windows:
+workflow run `33240892616`, head `299f353070e7454750fd6213ac34331e77e49586`, conversion exit code 0.
+
+See [reverse-waterfall/VALIDATION.md](reverse-waterfall/VALIDATION.md) for the
+separated standards and retailer-specific evidence.
 
 ## Download
 
@@ -46,7 +51,7 @@ See [reverse-waterfall/VALIDATION.md](reverse-waterfall/VALIDATION.md) for the f
 Use this URL in automated examples and golden tests:
 
 ```text
-https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/adc5a6b94e3b48e93dec243824dc1f44e085e836/reverse-waterfall/reverse-waterfall-demo.epub
+https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/299f353070e7454750fd6213ac34331e77e49586/reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
 ### Latest main-branch build
@@ -81,7 +86,7 @@ epub-preflight-samples/
       │  └─ container.xml
       └─ EPUB/
          ├─ package.opf
-         ├─ cover.png
+         ├─ cover.jpg
          ├─ nav.xhtml
          ├─ toc.ncx
          ├─ titlepage.xhtml
@@ -96,7 +101,7 @@ The canonical fixture uses a JPEG cover inside the EPUB, retains a separate edit
 
 Kindle Previewer is a separate retailer-specific conversion layer, so its evidence is tracked independently from standards validation.
 
-The current golden EPUB also passes the Windows GitHub Actions Kindle Previewer smoke workflow. Run `33239124405` installed Kindle Previewer 3.106.0 on `windows-latest`, converted the EPUB with exit code 0, and uploaded the generated Kindle conversion/quality artifacts. The same EPUB also returned `Book converted successfully!` through the Kindle Previewer CLI on a local Windows machine. A GUI-only conversion failure observed on that machine is therefore treated as a local Previewer environment/UI issue rather than an EPUB compatibility failure.
+The current JPEG golden passes the Windows GitHub Actions Kindle Previewer smoke workflow. Run `33240892616` checked out exact head `299f353070e7454750fd6213ac34331e77e49586`, converted the checked-in EPUB with exit code 0, and produced Kindle conversion/quality output. A separately normalized local JPEG reproduction also opened successfully in Kindle Previewer and produced KPF output.
 
 ## Rebuilding the fixture
 
