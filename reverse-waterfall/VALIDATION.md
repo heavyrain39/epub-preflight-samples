@@ -15,7 +15,7 @@ reverse-waterfall/reverse-waterfall-demo.epub
 Immutable verified URL:
 
 ```text
-https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/965d9924fc02cae7573fb38608a55aa983b6265e/reverse-waterfall/reverse-waterfall-demo.epub
+https://raw.githubusercontent.com/heavyrain39/epub-preflight-samples/c0656f27e4a42ac350f9833fb5a5f311889938fd/reverse-waterfall/reverse-waterfall-demo.epub
 ```
 
 The artifact at that commit was produced by the repository build workflow from the checked-in EPUB source tree.
@@ -31,7 +31,7 @@ epubpreflight/epub-preflight
 Production smoke run:
 
 ```text
-sk8I39i0VgH15IcyY
+ZxQAqBZlYGsYOBkYD
 ```
 
 Requested profile:
@@ -77,3 +77,26 @@ The packaged cover is now a 1600×2560 PNG. The editable vector artwork remains 
 Do not overwrite the meaning of this verification record by changing the immutable URL.
 
 If the fixture or validator stack changes, validate the new bytes independently and record a new immutable commit URL.
+
+
+## Kindle-conservative compatibility revision
+
+After a manual Kindle Previewer conversion failure with the otherwise clean PNG-cover fixture, the package was revised conservatively for Kindle ingestion:
+
+- added `toc.ncx` and wired it through `spine toc="ncx"`;
+- added the navigation document to the spine so a visible HTML table of contents is available near the beginning;
+- retained EPUB 3 `properties="cover-image"`;
+- added legacy `<meta name="cover" content="cover"/>` metadata;
+- kept the packaged cover as PNG, with the editable SVG source outside the EPUB.
+
+The revised bytes remain clean under the production Full profile:
+
+```text
+status: ready
+publishable: true
+validation_complete: true
+errors: 0
+warnings: 0
+```
+
+Manual Kindle Previewer confirmation remains pending because Kindle conversion is outside the hosted validator stack.
